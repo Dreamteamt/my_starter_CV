@@ -1,0 +1,48 @@
+import numpy as np
+from io import StringIO
+
+
+def extract_features(matrices: np.ndarray):
+    # matrices: SAMPLES x 28 x 28
+
+    # REPLACE TO YOUR CODE
+    features = []
+    for matrix in matrices:
+        feature = [matrix.max(), matrix.std(), matrix.mean()]
+        features.append(feature)
+    return features
+
+
+def get_total_input(text_lines):
+    records = text_lines.strip().split("\n\n")
+    N = int(records[0])
+    records = records[1:]
+
+    matrices = []
+    for i in range(N):
+        matrix = np.loadtxt(StringIO(records[i])).astype(int)
+        matrices.append(matrix)
+    return matrices
+
+
+def float_list_to_str(float_list):
+    string_list = [f"{num:.6f}" for num in float_list]
+    return ' '.join(string_list)
+
+
+def generate_total_output(matrices):
+    features = extract_features(matrices)
+
+    features_string_list = list(map(float_list_to_str, features))
+
+    return '\n'.join(features_string_list)
+
+
+input_txt = open("input.txt", "r").read()
+
+matrices = get_total_input(input_txt)
+
+feature_string = generate_total_output(matrices)
+
+with open("output.txt", "w") as f:
+    f.write(feature_string)
